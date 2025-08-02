@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Node Data Printer Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Node Data Printer Test Page</h1>
+    
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name">
+    </div>
+    
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email">
+    </div>
+    
+    <div class="form-group">
+        <label for="country">Country:</label>
+        <select id="country" name="country">
+            <option value="">Select a country</option>
+            <option value="us">United States</option>
+            <option value="ca">Canada</option>
+            <option value="uk">United Kingdom</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" rows="4" placeholder="Enter your message"></textarea>
+    </div>
+    
+    <div class="form-group">
+        <label>
+            <input type="checkbox" name="subscribe" value="yes">
+            Subscribe to newsletter
+        </label>
+    </div>
+    
+    <div class="form-group">
+        <label>Gender:</label>
+        <label>
+            <input type="radio" name="gender" value="male">
+            Male
+        </label>
+        <label>
+            <input type="radio" name="gender" value="female">
+            Female
+        </label>
+    </div>
+    
+    <button type="submit">Submit Form</button>
+    <button type="button">Cancel</button>
+    
+    <div style="margin-top: 30px;">
+        <h2>Links</h2>
+        <a href="https://www.google.com">Google</a> |
+        <a href="https://www.github.com">GitHub</a> |
+        <a href="https://www.stackoverflow.com">Stack Overflow</a>
+    </div>
+    
+    <div class="hidden">
+        <input type="hidden" name="hidden_field" value="hidden_value">
+        <button type="button">Hidden Button</button>
+    </div>
+    
+    <div style="opacity: 0.5;">
+        <input type="text" placeholder="Semi-transparent input">
+        <button type="button">Semi-transparent button</button>
+    </div>
+</body>
+</html> 
