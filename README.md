@@ -1,6 +1,6 @@
-# AI Automation Lab
+# dom-data-extractor
 
-A collection of AI and automation projects combining machine learning, computer vision, and DOM interaction using Python, OpenCV, TensorFlow, and automation tools. Built for experiments, demos, and real-world utility.
+Chrome extension and automation tools for web scraping, DOM analysis, and interactive element detection. Includes XPath generation, node data extraction, and comprehensive debugging tools for web automation projects.
 
 ## Projects
 
