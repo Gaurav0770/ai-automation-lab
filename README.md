@@ -1,8 +1,14 @@
-# Node Data Printer Chrome Extension
+# AI Automation Lab
+
+A collection of AI and automation projects combining machine learning, computer vision, and DOM interaction using Python, OpenCV, TensorFlow, and automation tools. Built for experiments, demos, and real-world utility.
+
+## Projects
+
+### Chrome Extension - Node Data Printer
 
 A minimal Chrome extension that prints node data for interactive elements, similar to the nanobrowser extension.
 
-## Features
+#### Features
 
 - Prints node data for all interactive elements (`a`, `button`, `input`, `select`, `textarea`, `label`)
 - Generates XPath for each element
@@ -11,7 +17,7 @@ A minimal Chrome extension that prints node data for interactive elements, simil
 - Works on all websites
 - Automatically runs when page loads
 
-## Installation
+#### Installation
 
 1. Open Chrome and go to `chrome://extensions/`
 2. Enable "Developer mode" in the top right
@@ -19,25 +25,25 @@ A minimal Chrome extension that prints node data for interactive elements, simil
 4. Select the `chrome-extension-node-data` folder
 5. The extension will be installed and active
 
-## Usage
+#### Usage
 
 1. Navigate to any website
 2. Open the browser's Developer Tools (F12 or right-click → Inspect)
 3. Go to the Console tab
 4. The extension will automatically print node data when the page loads
 
-## Output Format
+#### Output Format
 
 The extension prints two types of data:
 
-### Interactive Node Data
+##### Interactive Node Data
 ```
 === INTERACTIVE NODEDATA ===
 Interactive element (input): {tagName: 'input', attributes: {...}, xpath: '...', children: Array(0), isVisible: false}
 === END INTERACTIVE NODEDATA ===
 ```
 
-### All Node Data
+##### All Node Data
 ```
 === ALL NODEDATA ===
 Node 0: {tagName: 'div', attributes: {...}, xpath: '...', children: Array(0), isVisible: false}
@@ -45,7 +51,7 @@ Node 1: {tagName: 'div', attributes: {...}, xpath: '...', children: Array(0), is
 === END ALL NODEDATA ===
 ```
 
-## Node Data Structure
+#### Node Data Structure
 
 Each node contains:
 - `tagName`: The HTML tag name
@@ -59,9 +65,32 @@ Each node contains:
 - `placeholder`: Placeholder text for input elements
 - `type`: Input type for input elements
 
-## Files
+#### Files
 
 - `manifest.json`: Extension configuration
 - `content.js`: Main script that runs on web pages
 - `background.js`: Background service worker
-- `README.md`: This file 
+- `debug.js`: Debugging script for testing
+- `test.html`: Test page with various interactive elements
+- `TROUBLESHOOTING.md`: Comprehensive troubleshooting guide
+
+## About
+
+This repository serves as a lab for experimenting with AI and automation technologies, including:
+
+- **Machine Learning**: TensorFlow implementations
+- **Computer Vision**: OpenCV-based image processing
+- **Web Automation**: Chrome extensions and DOM interaction
+- **Real-world Applications**: Practical automation solutions
+
+## Technologies Used
+
+- Python
+- OpenCV
+- TensorFlow
+- Chrome Extensions (JavaScript)
+- Web Technologies (HTML, CSS, JavaScript)
+
+## Getting Started
+
+Each project in this repository has its own setup instructions. See individual project folders for specific requirements and installation steps.
