@@ -86,8 +86,6 @@ This repository serves as a lab for experimenting with AI and automation technol
 ## Technologies Used
 
 - Python
-- OpenCV
-- TensorFlow
 - Chrome Extensions (JavaScript)
 - Web Technologies (HTML, CSS, JavaScript)
 
