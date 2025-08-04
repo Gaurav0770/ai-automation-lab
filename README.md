@@ -1,6 +1,6 @@
-# AI Automation Lab
+# dom-data-extractor
 
-A collection of automation projects starting with a Chrome extension for DOM data extraction. Built for web automation, testing, and data extraction experiments.
+A collection of automation projects starting with a Chrome extension for DOM data extraction. Built for web automation, testing, and data extraction experiments. Includes Chrome extension and automation tools for web scraping, DOM analysis, and interactive element detection. Features XPath generation, node data extraction, and comprehensive debugging tools for web automation projects.
 
 ## Current Projects
 
@@ -102,6 +102,19 @@ This repository is designed to expand into a comprehensive AI automation lab wit
 ## About
 
 This repository serves as a lab for experimenting with automation technologies, starting with web automation and expanding into AI-powered tools. The current focus is on practical web data extraction with plans to incorporate computer vision and machine learning for more intelligent automation solutions.
+
+This repository serves as a lab for experimenting with AI and automation technologies, including:
+
+- **Machine Learning**: TensorFlow implementations
+- **Computer Vision**: OpenCV-based image processing
+- **Web Automation**: Chrome extensions and DOM interaction
+- **Real-world Applications**: Practical automation solutions
+
+## Technologies Used
+
+- Python
+- Chrome Extensions (JavaScript)
+- Web Technologies (HTML, CSS, JavaScript)
 
 ## Getting Started
 
