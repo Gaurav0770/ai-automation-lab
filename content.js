@@ -8,6 +8,86 @@ let currentState = new Set();
 // Track form interactions
 let formInteractionHistory = [];
 
+// Logging configuration
+const LogConfig = {
+    level: 'info', // 'debug', 'info', 'warn', 'error', 'none'
+    groups: {
+        click: true,
+        form: true,
+        state: true,
+        element: false
+    },
+    
+    log: function(level, group, message, data) {
+        if (this.level === 'none') return;
+        if (group && !this.groups[group]) return;
+        
+        const timestamp = new Date().toISOString().substring(11, 19);
+        const styles = {
+            debug: 'color: #9E9E9E',
+            info: 'color: #4CAF50',
+            warn: 'color: #FF9800',
+            error: 'color: #F44336'
+        };
+        
+        const style = styles[level] || '';
+        const prefix = `%c[${timestamp}] ${level.toUpperCase()}:`;
+        
+        if (data) {
+            console.groupCollapsed(prefix, style, message);
+            console.log(data);
+            console.groupEnd();
+        } else {
+            console.log(prefix, style, message);
+        }
+    }
+};
+
+class ClickableElementProcessor {
+    constructor() {
+        this._cachedStateClickableElementsHashes = { hashes: new Set() };
+    }
+
+    // Hash DOM element
+    static async hashDomElement(domElement) {
+        // Create a string representation of the element's key properties
+        const elementString = JSON.stringify({
+            tagName: domElement.tagName.toLowerCase(),
+            id: domElement.id || '',
+            className: domElement.className || '',
+            type: domElement.type || '',
+            name: domElement.name || '',
+            href: domElement.href || '',
+            textContent: domElement.textContent?.trim() || '',
+            xpath: getXPath(domElement),
+            innerHTML: domElement.innerHTML?.substring(0, 100) || '',
+            attributes: this.getAttributesString(domElement)
+        });
+        
+        // Create a simple hash
+        let hash = 0;
+        for (let i = 0; i < elementString.length; i++) {
+            const char = elementString.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32-bit integer
+        }
+        
+        return hash.toString();
+    }
+
+    // Get attributes as string for hashing
+    static getAttributesString(element) {
+        const attrs = [];
+        for (let attr of element.attributes) {
+            attrs.push(`${attr.name}=${attr.value}`);
+        }
+        return attrs.sort().join('|');
+    }
+}
+
+// Global instance
+const clickableElementProcessor = new ClickableElementProcessor();
+
 // Function to get XPath of an element
 function getXPath(element) {
     if (element.id !== '') {
@@ -156,10 +236,7 @@ function findNewElements() {
 // Function to track form field interactions
 function trackFormInteraction(event, interactionType) {
     const element = event.target;
-    const timestamp = new Date().toISOString();
-    
     const interaction = {
-        timestamp: timestamp,
         type: interactionType,
         element: {
             tagName: element.tagName.toLowerCase(),
@@ -167,7 +244,7 @@ function trackFormInteraction(event, interactionType) {
             id: element.id || 'no-id',
             name: element.name || 'no-name',
             placeholder: element.placeholder || 'no-placeholder',
-            value: element.value || '',
+            value: element.value !== undefined ? element.value : element.innerText || '',
             xpath: getXPath(element)
         },
         event: {
@@ -178,11 +255,10 @@ function trackFormInteraction(event, interactionType) {
     
     formInteractionHistory.push(interaction);
     
-    console.log(`=== FORM INTERACTION: ${interactionType.toUpperCase()} ===`);
-    console.log('Element:', interaction.element);
-    console.log('Event:', interaction.event);
-    console.log('Current value:', element.value);
-    console.log('=== END FORM INTERACTION ===');
+    // Only log if form logging is enabled
+    if (LogConfig.groups.form) {
+        LogConfig.log('info', 'form', `Form ${interactionType}`, interaction);
+    }
 }
 
 // Function to handle input events (typing) - only track on blur/focus
@@ -206,7 +282,7 @@ function handleFocus(event) {
             clientX: 0,
             clientY: 0
         };
-        trackFormInteraction(accumulatedEvent, 'input_complete');
+        trackFormInteraction(accumulatedEvent, 'New_Element');
     }
     
     // Reset for new field
@@ -226,7 +302,7 @@ function handleBlur(event) {
             clientX: 0,
             clientY: 0
         };
-        trackFormInteraction(accumulatedEvent, 'input_complete');
+        trackFormInteraction(accumulatedEvent, 'New_Element');
     }
     
     // Reset
@@ -290,33 +366,56 @@ function printFormInteractionHistory() {
 }
 
 // Function to handle mouse click and state tracking
-function handleMouseClick(event) {
+async function handleMouseClick(event) {
     try {
-        console.log('=== MOUSE CLICK DETECTED ===');
-        console.log('Clicked element:', event.target);
-        console.log('Click coordinates:', { x: event.clientX, y: event.clientY });
+        if (!LogConfig.groups.click) return;
         
-        // Update states
-        previousState = currentState;
-        currentState = getState();
+        const clickData = {
+            element: event.target,
+            coordinates: { x: event.clientX, y: event.clientY },
+            timestamp: new Date().toISOString()
+        };
         
-        // Find new elements
-        const newElements = findNewElements();
+        LogConfig.log('info', 'click', 'Mouse click detected', clickData);
         
-        console.log('=== STATE COMPARISON ===');
-        console.log(`Previous state elements: ${previousState.size}`);
-        console.log(`Current state elements: ${currentState.size}`);
-        console.log(`New elements found: ${newElements.length}`);
+        // Get current state of all clickable elements
+        const currentElements = findInteractiveElements();
+        const newElements = [];
         
-        if (newElements.length > 0) {
-            console.log('=== NEW ELEMENTS DETECTED ===');
-            newElements.forEach(({element, nodeData}) => {
-                console.log(`NEW ELEMENT (${nodeData.tagName}):`, nodeData);
-            });
-            console.log('=== END NEW ELEMENTS ===');
+        // Mark elements as new if they weren't in the previous state
+        for (const {element, nodeData} of currentElements) {
+            if (!isElementVisible(element)) continue;
+            const hash = await ClickableElementProcessor.hashDomElement(element);
+            const isNew = !clickableElementProcessor._cachedStateClickableElementsHashes.hashes.has(hash);
+            element.isNew = isNew;
+            
+            if (isNew) {
+                newElements.push({element, nodeData: {...nodeData, isNew: true}});
+            }
         }
         
-        console.log('=== END MOUSE CLICK ===');
+        // Update cached state with current elements
+        clickableElementProcessor._cachedStateClickableElementsHashes.hashes.clear();
+        for (const {element} of currentElements) {
+            const hash = await ClickableElementProcessor.hashDomElement(element);
+            clickableElementProcessor._cachedStateClickableElementsHashes.hashes.add(hash);
+        }
+        
+        // Log state comparison
+        const stateInfo = {
+            cachedHashes: clickableElementProcessor._cachedStateClickableElementsHashes.hashes.size,
+            currentElements: currentElements.length,
+            newElements: newElements.length
+        };
+        
+        LogConfig.log('debug', 'state', 'State comparison', stateInfo);
+        
+        // Log new elements if any
+        if (newElements.length > 0 && LogConfig.groups.element) {
+            newElements.forEach(({element, nodeData}) => {
+                LogConfig.log('info', 'element', `New ${nodeData.tagName} element`, nodeData);
+            });
+        }
     } catch (error) {
         console.error('Error handling mouse click:', error);
     }
