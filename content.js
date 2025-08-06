@@ -344,12 +344,7 @@ function printAllNodeData() {
             allNodeData.push(nodeData);
         });
         
-        console.log('=== ALL NODEDATA ===');
-        console.log(`Found ${allNodeData.length} total elements`);
-        allNodeData.forEach((nodeData, index) => {
-            console.log(`Node ${index}:`, nodeData);
-        });
-        console.log('=== END ALL NODEDATA ===');
+        LogConfig.log('info', 'all', 'All node data', allNodeData);
     } catch (error) {
         console.error('Error printing all node data:', error);
     }
